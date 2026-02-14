@@ -1,0 +1,22 @@
+{
+    "budget": {
+        "monthly_limit": 50,
+        "auto_downgrade": true,
+        "alert_threshold": 0.8
+    },
+    "preferences": {
+        "prefer_speed": false,
+        "prefer_cost": true,
+        "prefer_quality": false
+    },
+    "model_overrides": {
+        "simple": "gemini-1.5-flash",
+        "medium": "gemini-1.5-pro",
+        "complex": "gemini-1.5-pro"
+    },
+    "enabled_providers": {
+        "google": true,
+        "anthropic": false,
+        "openai": false
+    }
+}
