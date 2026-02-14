@@ -6,6 +6,37 @@ FluxAI is a multi-tenant cost and quota management system for MCP (Model Context
 
 Built for the **2 fast 2 mcp** hackathon on We Make Devs.
 
+## 🛠️ Tech Stack
+
+### Backend
+- **Runtime**: Node.js (v20+)
+- **Language**: TypeScript (v5.9.3)
+- **Framework**: Express.js (v5.2.1) - HTTP/REST API server
+- **Database**: Supabase (PostgreSQL) - Scalable real-time database
+- **MCP Protocol**: @modelcontextprotocol/sdk (v1.26.0) - Model Context Protocol integration
+
+### Frontend (Admin Dashboard)
+- **HTML5** - Simple admin UI for monitoring costs
+- **Vanilla JavaScript** - Lightweight client-side interactions
+
+### Core Libraries
+- **dotenv** (v17.2.4) - Environment variable management
+- **zod** (v4.3.6) - Runtime type validation and schema validation
+
+### Development Tools
+- **tsx** (v4.19.2) - TypeScript execution and watch mode
+- **@types/node**, **@types/express**, **@types/cors** - TypeScript definitions
+
+### Deployment
+- **Docker** - Containerization with multi-stage builds
+- **Docker Compose** - Local development orchestration
+- **Node Alpine** - Lightweight production image
+
+### AI Model Integration
+- **Google Gemini** (1.5 Flash, 1.5 Pro) - Cost-efficient AI models
+- **Anthropic Claude** (Optional) - Advanced reasoning models
+- **OpenAI GPT** (Optional) - General-purpose language models
+
 ## 🎯 Features
 
 - **Multi-tenant Budget Management**: Set daily/monthly limits per tenant, user, or tool
@@ -18,6 +49,57 @@ Built for the **2 fast 2 mcp** hackathon on We Make Devs.
 ## 🏗️ Architecture
 
 ```
+
+FluxAI implements a layered architecture with clear separation of concerns:
+
+### Core Components
+
+#### 1. **MCP Server Layer** (`src/mcp-server.ts`)
+- **Purpose**: Implements Model Context Protocol for agent integration
+- **Transport**: HTTP/SSE (Server-Sent Events) for real-time streaming
+- **Tools Exposed**: 
+  - `check_and_route`: Main routing and policy enforcement
+  - `get_usage_summary`: Real-time cost tracking
+  - `set_policy`, `list_policies`, `delete_policy`: Policy management
+  - `list_models`: Available model discovery
+  - `smart_complete`: AI completion with auto-routing
+
+#### 2. **HTTP API Server** (`src/index.ts`)
+- **Purpose**: Admin dashboard and REST endpoints
+- **Endpoints**:
+  - `/` - Admin UI for cost monitoring
+  - Health checks and status endpoints
+- **Port**: 3001 (configurable via environment)
+
+#### 3. **Business Logic Layer** (`src/lib/`)
+- **Cost Estimator** (`cost-estimator.ts`): Calculates token costs per model
+- **Policy Engine** (`policy-engine.ts`): Evaluates policies and makes routing decisions
+- **Model Selector** (`model-selector.ts`): Intelligent model selection based on budget
+- **Model Registry** (`model-registry.ts`): Centralized model configuration
+- **Prompt Analyzer** (`prompt-analyzer.ts`): Analyzes prompts for complexity
+- **Database Client** (`database.ts`): Supabase integration layer
+- **API Clients** (`api-clients/`): External AI provider integrations
+
+#### 4. **Tool Implementations** (`src/tools/`)
+- **check-and-route.ts**: Policy-based request routing
+- **get-usage-summary.ts**: Cost analytics and reporting
+- **policy-tools.ts**: CRUD operations for policies
+- **list-models.ts**: Model catalog management
+- **smart-complete.ts**: AI completion with cost optimization
+
+#### 5. **Data Layer**
+- **Supabase (PostgreSQL)**: 
+  - `tenants`: Multi-tenant configuration
+  - `budgets`: Budget limits and alerts
+  - `policies`: Routing policies
+  - `usage_logs`: Request tracking
+  - `usage_summaries`: Aggregated cost data
+- **Schema**: `schema.sql` with RLS (Row Level Security)
+- **Seed Data**: `seed-data.sql` with demo tenants
+
+### Data Flow
+
+
 ┌─────────────────┐
 │ Archestra Agent │
 └────────┬────────┘
